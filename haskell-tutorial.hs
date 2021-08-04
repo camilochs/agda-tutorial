@@ -23,14 +23,11 @@ mapCustom2 f r (x:xs) = (take r (repeat (f x))) ++ mapCustom2 f r xs
 
 -- Búsqueda de patrones (pattern matching)
 
-dumb1 :: Int -> [Char]
-dumb1 100 = "Limite del número par"
-dumb1 101 = "Limite del número impar"
-dumb1 x
-        | x `mod` 2 == 0 = dumb1 (x + 2)
-        | otherwise = dumb1 (x * x)
-
-
+removeFirstLastElement :: [a] -> [a]
+removeFirstLastElement []     = []
+removeFirstLastElement [_]    = []
+removeFirstLastElement [_,_]  = []
+removeFirstLastElement (x:xs) = [head xs] ++ removeFirstLastElement xs
 
 type CharInt = Either Char Int
 onlyCharOrInt :: CharInt -> Bool
@@ -38,7 +35,29 @@ onlyCharOrInt (Left _) = True
 onlyCharOrInt (Right _) = True
 
 
+data MultiItem = Item1 Int | Item2 Int Int | ItemN [MultiItem]
 
+sumItems :: MultiItem -> Int
+sumItems (Item1 x) = x
+sumItems (Item2 x y) = x + y
+sumItems (ItemN (x:xs)) = sumItems x + sum [sumItems e | e <- xs]
+
+
+numberToString:: Int -> [Char]
+numberToString 0 = "cero"
+numberToString 1 = "uno"
+numberToString 2 = "dos"
+numberToString 3 = "tres"
+numberToString x
+  | x < 0 = numberToString (x + 1)
+  | otherwise = numberToString (x - 1)
+
+
+-- Evaluación perezosa
+
+r = (repeat 1)
+
+numberNotEvaluated x y z = x + z
 
 -- Transparencia referencial
 
