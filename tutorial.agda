@@ -11,6 +11,12 @@ _ || true = true
 true || _ = true
 _ || _    = false
 
+_or_ : Bool -> Bool -> Bool
+false or x = x
+true or _ = true
+
+infixr 20 _or_
+
 _&&_ : Bool -> Bool -> Bool
 true && true = true
 _ && _  = false
@@ -31,8 +37,8 @@ _ == _ = false
 
 -- Expresiones aritmeticas
 data Nat : Set where
-  zero : Nat
-  succ : Nat -> Nat
+ zero : Nat
+ succ : Nat -> Nat
 
 _+_ : Nat -> Nat -> Nat
 zero + m = m
@@ -95,3 +101,18 @@ last : {A : Set} -> List A -> List A
 last Nil = Nil
 last (Cons y Nil) = (Cons y Nil)
 last (Cons y y') = (last y')
+
+
+identity : (A : Set) -> A -> A
+identity A x = x
+
+
+-- Dependencia de Tipos
+
+test : (A : Set) -> (A -> Set)
+test = \(A : Set) x -> A
+
+apply : (A : Set) -> (B : A -> Set) -> ((x : A) -> B x) -> (a : A) -> B a
+apply A B f a = f a
+
+-- apply Nat (Test Nat) succ (succ zero) -> succ (succ zero)
