@@ -54,7 +54,7 @@ zero - m = zero
 n - zero = n
 (succ n) - (succ m) = n - m
 
-infixl 100 _*_
+infixr 100 _*_
 
 pred : Nat -> Nat
 pred zero = zero
@@ -87,27 +87,38 @@ zero <= (succ _) = true
 (succ _) <= zero = false
 (succ n) <= (succ m) = n <= m
 
-
--- Listas
-data List (A : Set) : Set where
-  Nil : List A
-  Cons : A -> List A -> List A
-
-head : {A : Set} -> List A -> List A
-head Nil = Nil
-head (Cons y y') = (Cons y Nil)
-
-last : {A : Set} -> List A -> List A
-last Nil = Nil
-last (Cons y Nil) = (Cons y Nil)
-last (Cons y y') = (last y')
-
+-- Tipos dependientes e implicitos
 
 identity : (A : Set) -> A -> A
 identity A x = x
 
+-- Operaciones sobre listas
 
--- Dependencia de Tipos
+data Vec (A : Set) : Nat -> Set where
+ []   : Vec A zero
+ _::_ : {n : Nat} -> A -> Vec A n -> Vec A (succ n)
+
+infixr 10 _::_
+
+head : {A : Set}{n : Nat} -> Vec A (succ n) -> A
+head (x :: xs) = x
+
+last : {A : Set}{n : Nat} -> Vec A (succ n) -> A
+last (x :: []) = x
+last (x :: x1 :: x2) = last (x1 :: x2)
+
+tail : {A : Set}{n : Nat} -> Vec A (succ n) -> Vec A n
+tail (x :: xs) = xs
+
+prepend : {A : Set}{n : Nat} -> A -> Vec A n -> Vec A (succ n)
+prepend e vs = e :: vs
+
+append : {A : Set}{n : Nat} -> Vec A n -> A -> Vec A (succ n)
+append (x :: xs) e = x :: (append xs e)
+append [] e = e :: []
+
+
+-- Operaciones con funciones dependientes de tipos
 
 test : (A : Set) -> (A -> Set)
 test = \(A : Set) x -> A
